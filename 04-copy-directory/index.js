@@ -18,6 +18,7 @@ function copyDir(filePath) {
 		});
 	})
 }
+
 function makeDir(){
 	fs.mkdir(copyDirPath, { recursive: true }, err => {
 		if (err) throw err;
@@ -25,18 +26,6 @@ function makeDir(){
 }
 
 fs.rm(copyDirPath, { recursive: true, force: true }, err => {
-	if (err === 'ENOENT') {
-		makeDir();
-		copyDir(filePath)
-	}
-	else{
 		makeDir();
 		copyDir(filePath);
-	}
 });
-
-makeDir();
-
-
-
-
