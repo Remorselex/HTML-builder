@@ -1,4 +1,4 @@
-// Да-да, можно было бы попробовать написать с помощью async/await, но какое задание - такое рещение. Собсна YOLO... То есть.... YAGNI ?
+// Немного YOLO кода. К слову можно было еще через async сделать. Но да ладно )
 const fs = require('fs');
 const path = require('path');
 
@@ -29,3 +29,17 @@ fs.rm(copyDirPath, { recursive: true, force: true }, err => {
 		makeDir();
 		copyDir(filePath);
 });
+
+//Адекватный код если надо ->
+
+
+// fs.mkdir(filePath, {recursive: true}, () => { });
+
+// fs.readdir(copyDirPath, {withFileTypes: false}, (err, files) =>{
+
+// 	files.forEach(file =>{
+// 		fs.copyFile(path.join(filePath, file), path.join(copyDirPath,file),()=>{
+// 			console.log(`File ${file} copyed `);
+// 		});
+// 	});
+// });
