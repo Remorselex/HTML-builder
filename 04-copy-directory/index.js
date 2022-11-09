@@ -32,6 +32,8 @@ fs.rm(copyDirPath, { recursive: true, force: true }, err => {
 
 //Адекватный код если надо ->
 
+// let filePath = path.join(__dirname, 'files');
+// let copyDirPath = path.join(__dirname, 'files-copy');
 
 // fs.mkdir(filePath, {recursive: true}, () => { });
 
