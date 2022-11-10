@@ -4,10 +4,12 @@ const { get } = require('https');
 const { dirname } = require('path');
 const path = require('path');
 const { Stream } = require('stream');
+const { threadId } = require('worker_threads');
 
 const pathProjectDist = path.join(__dirname, 'project-dist')
 const pathStyleBundle = path.join(pathProjectDist, 'style.css')
 const pathHtml = path.join(__dirname, 'template.html')
+const pathHtmlDist = path.join(pathProjectDist, 'template.html')
 
 function getDirectory() {
 	fs.mkdir(pathProjectDist, () => { });
@@ -31,7 +33,6 @@ function getStyle() {
 	});
 }
 
-
 function getAssets() {
 	const pathAssets = path.join(__dirname, 'assets');
 	fs.readdir(pathAssets, { withFileTypes: true }, (err, dirs) => {
@@ -53,10 +54,13 @@ function getAssets() {
 		});
 	});
 }
+function transferHtml() {
+	const targetPath = path.join(pathProjectDist, 'template.html');
+	fs.copyFile(pathHtml, targetPath, () => { });
+}
 
 function getHtml() {
 	const pathComponents = path.join(__dirname, 'components')
-
 	fs.readFile(pathHtml, 'utf-8', (err, data) => {
 		let htmlText = data;
 		fs.readdir(pathComponents, { withFileTypes: true }, (err, files) => {
@@ -64,25 +68,16 @@ function getHtml() {
 				const sourceComponentPath = path.join(pathComponents, file.name)
 				fs.readFile(sourceComponentPath, 'utf-8', (err, dataFile) => {
 					htmlText = htmlText.replace(`{{${file.name.slice(0, -5)}}}`, dataFile);
-					fs.writeFile(pathHtml, htmlText, (err) => { })
+					fs.writeFile(pathHtml, htmlText, (err) => { transferHtml()});
 				})
 			})
 		});
 	});
-
 }
-function transferHtml() {
-	const targetPath = path.join(pathProjectDist, 'template.html');
-	fs.copyFile(pathHtml, targetPath, () => { });
-}
-
-// нет создания папки assets и project dist
 
 (async () => {
 	getDirectory();
-	await getStyle();
-	await getAssets();
-	await getHtml();
-	await transferHtml();
-
+	getStyle();
+	getAssets();
+	getHtml();
 })();
